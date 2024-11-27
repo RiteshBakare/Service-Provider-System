@@ -187,7 +187,7 @@ public class CustomerService {
             return new ArrayList<>();
         }
         return requestSlots.stream()
-                .map(slot -> new RequestDTO(slot.getStartTime(), slot.getEndTime(), slot.isRequestAccepted()))
+                .map(slot -> new RequestDTO(slot.getStartTime(), slot.getEndTime(), slot.isRequestAccepted(), slot.getRequestedService()))
                 .collect(Collectors.toList());
     }
 
@@ -200,6 +200,7 @@ public class CustomerService {
                     slot.setStartTime(dto.getStartTime());
                     slot.setEndTime(dto.getEndTime());
                     slot.setRequestAccepted(false);
+                    slot.setRequestedService(dto.getRequestedService());
                     slot.setCustomer(customer);
                     return slot;
                 })

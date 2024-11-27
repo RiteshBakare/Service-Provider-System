@@ -246,6 +246,13 @@
                     <span th:text="${#temporals.format(slot.endTime, 'HH:mm')}"></span>
                   </div>
                 </div>
+                <div class="time-info">
+                  <i class="fas fa-briefcase"></i>
+                  <div>
+                    <strong>Service:</strong>
+                    <span th:text="${slot.requestedService}"></span>
+                  </div>
+                </div>
               </div>
               <form th:action="@{'/service-provider-view/' + ${provider.id} + '/book'}" method="post">
                 <input type="hidden" name="customerId" th:value="${customer.id}">

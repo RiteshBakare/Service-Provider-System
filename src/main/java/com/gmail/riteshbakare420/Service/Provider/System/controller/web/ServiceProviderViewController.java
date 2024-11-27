@@ -72,7 +72,8 @@ public class ServiceProviderViewController {
                             slot.getId(),
                             slot.getStartTime(),
                             slot.getEndTime(),
-                            slot.isRequestAccepted()
+                            slot.isRequestAccepted(),
+                            slot.getRequestedService()
                     ))
                     .collect(Collectors.toList());
 

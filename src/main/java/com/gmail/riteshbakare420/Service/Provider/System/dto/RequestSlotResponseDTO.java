@@ -13,5 +13,6 @@ public class RequestSlotResponseDTO {
     private Long id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private boolean isRequesteAccepted;
+    private boolean isRequestAccepted;
+    private String requestedService;
 }

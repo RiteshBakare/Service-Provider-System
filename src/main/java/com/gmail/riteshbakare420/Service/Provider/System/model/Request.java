@@ -21,6 +21,7 @@ public class Request {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean isRequestAccepted;
+    private String requestedService;
 
     @JsonBackReference(value = "customer-request-slots")
     @ManyToOne

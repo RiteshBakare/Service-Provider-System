@@ -13,4 +13,5 @@ public class RequestDTO {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean isRequestAccepted;
+    private String requestedService;
 }
