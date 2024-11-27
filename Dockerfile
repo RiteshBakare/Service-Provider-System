@@ -1,23 +1,8 @@
-# Use a base image with OpenJDK 21
-FROM eclipse-temurin:21-jdk-alpine
+FROM jelastic/maven:3.9.1-openjdk-21.ea-b21 AS build
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Set the working directory
-WORKDIR /app
-
-# Copy the Maven wrapper script and project files
-COPY mvnw pom.xml ./
-
-# Download dependencies
-RUN ./mvnw dependency:go-offline
-
-# Copy the entire project
-COPY src ./src
-
-# Build the application
-RUN ./mvnw clean package -DskipTests
-
-# Expose the application port (change if your app runs on a different port)
+FROM openjdk:21-jdk-slim
+COPY --from=build /target/Service-Provider-System-0.0.1-SNAPSHOT.jar demo.jar
 EXPOSE 8080
-
-# Run the Spring Boot application
-CMD ["java", "-jar", "target/Service-Provider-System-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","demo.jar"]
