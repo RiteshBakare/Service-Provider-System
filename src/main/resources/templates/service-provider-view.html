@@ -206,6 +206,93 @@
             </table>
         </div>
     </div>
+
+
+    <!-- Success/Error Messages -->
+    <div th:if="${successMessage}" class="alert alert-success" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Customer Request Section -->
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-briefcase me-2"></i>Customers</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3" th:each="provider : ${customers}">
+                    <div class="card provider-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-user-tie me-2"></i>
+                                <span th:text="${provider.name}"></span>
+                            </h5>
+                            <p class="card-text">
+<!--                                <i class="fas fa-tags me-2"></i><strong>Service Type:</strong>-->
+<!--                                <span th:text="${provider.serviceType}"></span><br>-->
+                                <i class="fas fa-envelope me-2"></i><strong>Email:</strong>
+                                <span th:text="${provider.email}"></span><br>
+                                <i class="fas fa-phone me-2"></i><strong>Phone:</strong>
+                                <span th:text="${provider.phone}"></span>
+                            </p>
+                            <a th:href="@{'/service-provider-view/' + ${serviceProvider.id} + '/customer/' + ${provider.id} + '/slots'}"
+                               class="btn btn-primary">
+                                <i class="fas fa-calendar-alt me-2"></i>View Available Slots
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Bookings Section -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3><i class="fas fa-calendar-check me-2"></i>Your Current Bookings</h3>
+        </div>
+        <div class="card-body">
+            <div th:if="${requestBookings.empty}" class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                No bookings found.
+            </div>
+            <div class="table-responsive" th:if="${!requestBookings.empty}">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th><i class="fas fa-hashtag me-2"></i>Booking ID</th>
+                        <th><i class="fas fa-user-tie me-2"></i>Service Provider</th>
+                        <th><i class="fas fa-calendar me-2"></i>Date</th>
+                        <th><i class="fas fa-clock me-2"></i>Time</th>
+                        <th><i class="fas fa-info-circle me-2"></i>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="booking : ${requestBookings}">
+                        <td th:text="${booking.id}"></td>
+                        <td th:text="${booking.serviceProvider.name}"></td>
+                        <td th:text="${#temporals.format(booking.requestSlot.startTime, 'dd-MM-yyyy')}"></td>
+                        <td th:text="${#temporals.format(booking.requestSlot.startTime, 'HH:mm')}"></td>
+                        <td>
+                            <span th:text="${booking.status}"
+                                  th:class="${'status-badge ' +
+                                  (booking.status == 'CONFIRMED' ? 'bg-success' :
+                                   booking.status == 'PENDING' ? 'bg-warning' :
+                                   booking.status == 'CANCELLED' ? 'bg-danger' : 'bg-secondary')} +
+                                   ' text-white'">
+                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>

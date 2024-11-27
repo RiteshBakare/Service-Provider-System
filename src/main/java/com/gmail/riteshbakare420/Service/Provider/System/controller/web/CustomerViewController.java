@@ -1,10 +1,12 @@
 package com.gmail.riteshbakare420.Service.Provider.System.controller.web;
 
+import com.gmail.riteshbakare420.Service.Provider.System.dto.RequestDTO;
 import com.gmail.riteshbakare420.Service.Provider.System.dto.ServiceProviderResponseDTO;
 import com.gmail.riteshbakare420.Service.Provider.System.dto.SlotDTO;
 import com.gmail.riteshbakare420.Service.Provider.System.dto.SlotResponseDTO;
 import com.gmail.riteshbakare420.Service.Provider.System.model.Booking;
 import com.gmail.riteshbakare420.Service.Provider.System.model.Customer;
+import com.gmail.riteshbakare420.Service.Provider.System.model.RequestBooking;
 import com.gmail.riteshbakare420.Service.Provider.System.model.ServiceProvider;
 import com.gmail.riteshbakare420.Service.Provider.System.service.CustomerService;
 import com.gmail.riteshbakare420.Service.Provider.System.service.ServiceProviderService;
@@ -29,17 +31,21 @@ public class CustomerViewController {
     @Autowired
     private ServiceProviderService serviceProviderService;
 
-
+    // to do --> customer-dashboard
     @GetMapping("/{customerId}")
     public String getCustomerView(@PathVariable Long customerId, Model model) {
         try {
             Customer customer = customerService.getCustomerById(customerId);
             List<ServiceProviderResponseDTO> serviceProviders = serviceProviderService.getAllServiceProviders();
             List<Booking> bookings = customer.getBookings();
+            List<RequestDTO> availableRequestSlots = customerService.getAvailableRequestSlots(customerId);
+            List<RequestBooking> requestBookings = customer.getRequestBookings();
 
             model.addAttribute("customer", customer);
             model.addAttribute("serviceProviders", serviceProviders);
             model.addAttribute("bookings", bookings);
+            model.addAttribute("availableRequestSlots", availableRequestSlots);
+            model.addAttribute("requestBookings", requestBookings);
 
             return "customer-dashboard";
         } catch (Exception e) {
@@ -47,7 +53,6 @@ public class CustomerViewController {
             return "error";
         }
     }
-
 
     @GetMapping("/{customerId}/provider/{providerId}/slots")
     public String getProviderSlots(@PathVariable Long customerId,
@@ -91,6 +96,21 @@ public class CustomerViewController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/customer-view/" + customerId;
         }
+    }
+
+    @PostMapping("/{customerId}/slots")
+    public String addRequestSlots(@PathVariable Long customerId, @ModelAttribute RequestDTO slotDTO, Model model) {
+        customerService.addRequestSlots(customerId, List.of(slotDTO));
+        return "redirect:/customer-view/{customerId}";
+    }
+
+    @PostMapping("/{customerId}/bookings/{requestBookingId}/status")
+    public String updateRequestBookingStatus(@PathVariable Long customerId,
+                                      @PathVariable Long requestBookingId,
+                                      @RequestParam String newStatus,
+                                      Model model) {
+        customerService.updateRequestBookingStatus(customerId, requestBookingId, newStatus);
+        return "redirect:/customer-view/{customerId}";
     }
 }
 

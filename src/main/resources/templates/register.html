@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        }
+        .register-card {
+            backdrop-filter: blur(15px);
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+<div class="w-full max-w-xl mx-auto">
+    <div class="register-card rounded-xl p-8 shadow-lg animate-[slideIn_0.5s_ease-out]">
+        <h2 class="text-4xl font-bold text-center text-white mb-8">Create Account</h2>
+        <form th:action="@{/register}" method="post" th:object="${userDTO}" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-white text-sm font-bold mb-2" for="username">
+                        Username
+                    </label>
+                    <input
+                            id="username"
+                            type="text"
+                            th:field="*{username}"
+                            required
+                            class="input-field w-full px-3 py-2 text-white bg-white bg-opacity-20 rounded-lg border border-white border-opacity-20 focus:border-indigo-500 transition-all duration-300"
+                            placeholder="Choose a username"
+                    >
+                </div>
+                <div>
+                    <label class="block text-white text-sm font-bold mb-2" for="name">
+                        Full Name
+                    </label>
+                    <input
+                            id="name"
+                            type="text"
+                            th:field="*{name}"
+                            required
+                            class="input-field w-full px-3 py-2 text-white bg-white bg-opacity-20 rounded-lg border border-white border-opacity-20 focus:border-indigo-500 transition-all duration-300"
+                            placeholder="Enter your full name"
+                    >
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-white text-sm font-bold mb-2" for="email">
+                        Email
+                    </label>
+                    <input
+                            id="email"
+                            type="email"
+                            th:field="*{email}"
+                            required
+                            class="input-field w-full px-3 py-2 text-white bg-white bg-opacity-20 rounded-lg border border-white border-opacity-20 focus:border-indigo-500 transition-all duration-300"
+                            placeholder="your.email@example.com"
+                    >
+                </div>
+                <div>
+                    <label class="block text-white text-sm font-bold mb-2" for="phone">
+                        Phone Number
+                    </label>
+                    <input
+                            id="phone"
+                            type="tel"
+                            th:field="*{phone}"
+                            required
+                            class="input-field w-full px-3 py-2 text-white bg-white bg-opacity-20 rounded-lg border border-white border-opacity-20 focus:border-indigo-500 transition-all duration-300"
+                            placeholder="Enter your phone number"
+                    >
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-white text-sm font-bold mb-2" for="password">
+                        Password
+                    </label>
+                    <input
+                            id="password"
+                            type="password"
+                            th:field="*{password}"
+                            required
+                            class="input-field w-full px-3 py-2 text-white bg-white bg-opacity-20 rounded-lg border border-white border-opacity-20 focus:border-indigo-500 transition-all duration-300"
+                            placeholder="Create a strong password"
+                    >
+                </div>
+                <div>
+                    <label class="block text-white text-sm font-bold mb-2" for="userType">
+                        User Type
+                    </label>
+                    <select
+                            id="userType"
+                            th:field="*{userType}"
+                            required
+                            class="input-field w-full px-3 py-2 text-white bg-white bg-opacity-20 rounded-lg border border-white border-opacity-20 focus:border-indigo-500 transition-all duration-300"
+                    >
+                        <option value="CUSTOMER">Customer</option>
+                        <option value="SERVICE_PROVIDER">Service Provider</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="serviceTypeContainer" class="hidden">
+                <label class="block text-white text-sm font-bold mb-2" for="serviceType">
+                    Service Type
+                </label>
+                <input
+                        id="serviceType"
+                        type="text"
+                        th:field="*{serviceType}"
+                        class="input-field w-full px-3 py-2 text-white bg-white bg-opacity-20 rounded-lg border border-white border-opacity-20 focus:border-indigo-500 transition-all duration-300"
+                        placeholder="Enter your service type"
+                >
+            </div>
+
+            <button
+                    type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:shadow-outline mt-4"
+            >
+                Create Account
+            </button>
+
+            <div class="text-center mt-4">
+                <a
+                        href="/login"
+                        class="text-white hover:text-indigo-200 transition-colors duration-300"
+                >
+                    Already have an account? Login
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Dynamic service type field display
+    const userTypeSelect = document.getElementById('userType');
+    const serviceTypeContainer = document.getElementById('serviceTypeContainer');
+
+    userTypeSelect.addEventListener('change', function() {
+        serviceTypeContainer.classList.toggle('hidden', this.value !== 'SERVICE_PROVIDER');
+    });
+</script>
+</body>
+</html>

@@ -20,7 +20,7 @@ public class Request {
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private boolean isRequesteAccepted;
+    private boolean isRequestAccepted;
 
     @JsonBackReference(value = "customer-request-slots")
     @ManyToOne

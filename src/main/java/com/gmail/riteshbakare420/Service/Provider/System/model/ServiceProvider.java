@@ -31,6 +31,6 @@ public class ServiceProvider {
     private List<Booking> bookings;
 
     @JsonManagedReference(value = "provider-request-bookings")
-    @OneToMany(mappedBy = "provider", cascade = CascadeType.ALL)
-    private List<Booking> requestBookings;
+    @OneToMany(mappedBy = "serviceProvider", cascade = CascadeType.ALL)
+    private List<RequestBooking> requestBookings;
 }

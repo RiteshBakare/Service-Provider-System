@@ -1,12 +1,8 @@
 package com.gmail.riteshbakare420.Service.Provider.System.controller.web;
 
-import com.gmail.riteshbakare420.Service.Provider.System.dto.BookingDetailsDTO;
-import com.gmail.riteshbakare420.Service.Provider.System.dto.ServiceProviderDTO;
-import com.gmail.riteshbakare420.Service.Provider.System.dto.ServiceProviderResponseDTO;
-import com.gmail.riteshbakare420.Service.Provider.System.dto.SlotDTO;
-import com.gmail.riteshbakare420.Service.Provider.System.model.Booking;
-import com.gmail.riteshbakare420.Service.Provider.System.model.ServiceProvider;
-import com.gmail.riteshbakare420.Service.Provider.System.model.Slot;
+import com.gmail.riteshbakare420.Service.Provider.System.dto.*;
+import com.gmail.riteshbakare420.Service.Provider.System.model.*;
+import com.gmail.riteshbakare420.Service.Provider.System.service.CustomerService;
 import com.gmail.riteshbakare420.Service.Provider.System.service.ServiceProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,9 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/service-provider-view")
@@ -25,15 +23,24 @@ public class ServiceProviderViewController {
     @Autowired
     private ServiceProviderService serviceProviderService;
 
+    @Autowired
+    private CustomerService customerService;
+
+    // to do --> service-provider-view
     @GetMapping("/{serviceProviderId}")
     public String getServiceProviderView(@PathVariable Long serviceProviderId, Model model) {
         ServiceProvider serviceProvider = serviceProviderService.getServiceProviderById(serviceProviderId);
         List<SlotDTO> availableSlots = serviceProviderService.getAvailableSlots(serviceProviderId);
         List<Booking> bookings = serviceProvider.getBookings();
+        List<CustomerResponseDTO> customers = customerService.getAllCustomers();
+        List<RequestBooking> requestBookings = serviceProvider.getRequestBookings();
+
 
         model.addAttribute("serviceProvider", serviceProvider);
         model.addAttribute("availableSlots", availableSlots);
         model.addAttribute("bookings", bookings);
+        model.addAttribute("customers", customers);
+        model.addAttribute("requestBookings", requestBookings);
         return "service-provider-view";
     }
 
@@ -50,6 +57,49 @@ public class ServiceProviderViewController {
                                       Model model) {
         serviceProviderService.updateBookingStatus(serviceProviderId, bookingId, newStatus);
         return "redirect:/service-provider-view/{serviceProviderId}";
+    }
+
+    @GetMapping("/{providerId}/customer/{customerId}/slots")
+    public String getProviderSlots(@PathVariable Long customerId,
+                                   @PathVariable Long providerId,
+                                   Model model) {
+        try {
+            Customer customer = customerService.getCustomerById(customerId);
+            ServiceProvider provider = serviceProviderService.getServiceProviderById(providerId);
+            List<RequestSlotResponseDTO> availableSlots = customer.getRequestSlots().stream()
+                    .filter(slot -> !slot.isRequestAccepted())
+                    .map(slot -> new RequestSlotResponseDTO(
+                            slot.getId(),
+                            slot.getStartTime(),
+                            slot.getEndTime(),
+                            slot.isRequestAccepted()
+                    ))
+                    .collect(Collectors.toList());
+
+            model.addAttribute("customer", customer);
+            model.addAttribute("provider", provider);
+            model.addAttribute("availableSlots", availableSlots);
+
+            return "customer-request-slots";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error";
+        }
+    }
+
+    @PostMapping("/{providerId}/book")
+    public String bookService(@PathVariable Long providerId,
+                              @RequestParam Long customerId,
+                              @RequestParam Long requestId,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            serviceProviderService.acceptRequestedService(customerId, providerId, requestId);
+            redirectAttributes.addFlashAttribute("successMessage", "Request accepted successfully!");
+            return "redirect:/service-provider-view/" + providerId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/service-provider-view/" + providerId;
+        }
     }
 }
 

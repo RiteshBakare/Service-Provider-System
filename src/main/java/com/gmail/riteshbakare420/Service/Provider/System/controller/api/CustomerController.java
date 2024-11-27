@@ -1,6 +1,7 @@
 package com.gmail.riteshbakare420.Service.Provider.System.controller.api;
 
 import com.gmail.riteshbakare420.Service.Provider.System.dto.CustomerDTO;
+import com.gmail.riteshbakare420.Service.Provider.System.dto.CustomerResponseDTO;
 import com.gmail.riteshbakare420.Service.Provider.System.model.Customer;
 import com.gmail.riteshbakare420.Service.Provider.System.service.CustomerService;
 import com.gmail.riteshbakare420.Service.Provider.System.utils.exceptions.ResourceNotFoundException;
@@ -18,7 +19,7 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping("/")
-    public ResponseEntity<List<Customer>> getAllCustomers() {
+    public ResponseEntity<List<CustomerResponseDTO>> getAllCustomers() {
         return ResponseEntity.ok(customerService.getAllCustomers());
     }
 

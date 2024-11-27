@@ -32,7 +32,7 @@ public class AdminViewController {
 
     @GetMapping("/customers")
     public String listCustomers(Model model) {
-        List<Customer> customers = customerService.getAllCustomers();
+        List<CustomerResponseDTO> customers = customerService.getAllCustomers();
         model.addAttribute("customers", customers);
         return "admin/customers/list";
     }

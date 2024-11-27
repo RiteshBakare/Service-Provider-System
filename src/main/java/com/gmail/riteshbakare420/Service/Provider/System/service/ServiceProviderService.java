@@ -1,12 +1,8 @@
 package com.gmail.riteshbakare420.Service.Provider.System.service;
 
 import com.gmail.riteshbakare420.Service.Provider.System.dto.*;
-import com.gmail.riteshbakare420.Service.Provider.System.model.Booking;
-import com.gmail.riteshbakare420.Service.Provider.System.model.ServiceProvider;
-import com.gmail.riteshbakare420.Service.Provider.System.model.Slot;
-import com.gmail.riteshbakare420.Service.Provider.System.repository.BookingRepository;
-import com.gmail.riteshbakare420.Service.Provider.System.repository.ServiceProviderRepository;
-import com.gmail.riteshbakare420.Service.Provider.System.repository.SlotRepository;
+import com.gmail.riteshbakare420.Service.Provider.System.model.*;
+import com.gmail.riteshbakare420.Service.Provider.System.repository.*;
 import com.gmail.riteshbakare420.Service.Provider.System.utils.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +22,14 @@ public class ServiceProviderService {
     private ServiceProviderRepository serviceProviderRepository;
     @Autowired
     private SlotRepository slotRepository;
+    @Autowired
+    private RequestRepository requestRepository;
+
+    @Autowired
+    private RequestBookingRepository requestBookingRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     //    public List<ServiceProvider> getAllServiceProviders() {
 //        return serviceProviderRepository.findAll();
@@ -130,6 +134,7 @@ public class ServiceProviderService {
                 .collect(Collectors.toList());
     }
 
+
     public BookingDetailsDTO updateBookingStatus(
             Long serviceProviderId,
             Long bookingId,
@@ -170,4 +175,34 @@ public class ServiceProviderService {
                 booking.getStatus()
         );
     }
+
+    public Customer getCustomerById(Long customerId) {
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+    }
+
+    public void acceptRequestedService(Long customerId, Long serviceProviderId, Long requestId) {
+        Customer customer = getCustomerById(customerId);
+        ServiceProvider serviceProvider = serviceProviderRepository.findById(serviceProviderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Service Provider not found"));
+        Request requestSlot = requestRepository.findById(requestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Request not found"));
+
+        if (requestSlot.isRequestAccepted()) {
+            throw new IllegalStateException("Request already accepted");
+        }
+
+        RequestBooking requestBooking = new RequestBooking();
+        requestBooking.setCustomer(customer);
+        requestBooking.setServiceProvider(serviceProvider);
+        requestBooking.setRequestSlot(requestSlot);
+        requestBooking.setRequestBookingTime(LocalDateTime.now());
+        requestBooking.setStatus("BOOKED");
+
+        requestSlot.setRequestAccepted(true);
+        requestRepository.save(requestSlot);
+        requestBookingRepository.save(requestBooking);
+    }
+
+
 }

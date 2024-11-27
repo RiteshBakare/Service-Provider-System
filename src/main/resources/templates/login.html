@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .login-card {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+<div class="w-full max-w-md mx-auto p-6">
+    <div class="login-card rounded-xl p-8 shadow-lg animate-[fadeIn_0.5s_ease-out]">
+        <h2 class="text-3xl font-bold text-center text-white mb-6">Login</h2>
+        <form th:action="@{/perform_login}" method="post">
+            <div class="mb-4">
+                <label class="block text-white text-sm font-bold mb-2" for="username">
+                    Username
+                </label>
+                <input
+                        id="username"
+                        type="text"
+                        name="username"
+                        required
+                        class="input-field w-full px-3 py-2 text-white bg-white bg-opacity-20 rounded-lg border border-white border-opacity-20 focus:border-indigo-500 transition-all duration-300"
+                        placeholder="Enter your username"
+                >
+            </div>
+            <div class="mb-6">
+                <label class="block text-white text-sm font-bold mb-2" for="password">
+                    Password
+                </label>
+                <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        required
+                        class="input-field w-full px-3 py-2 text-white bg-white bg-opacity-20 rounded-lg border border-white border-opacity-20 focus:border-indigo-500 transition-all duration-300"
+                        placeholder="Enter your password"
+                >
+            </div>
+            <button
+                    type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:shadow-outline"
+            >
+                Login
+            </button>
+            <div class="text-center mt-4">
+                <a
+                        href="/register"
+                        class="text-white hover:text-indigo-200 transition-colors duration-300"
+                >
+                    Register New Account
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
