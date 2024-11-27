@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.16/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f6f9fc 0%, #eef2f7 100%);
+            min-height: 100vh;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .nav-card:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+            transform: translateY(-2px);
+        }
+
+        .nav-card:hover .card-title,
+        .nav-card:hover .card-icon,
+        .nav-card:hover .card-description {
+            color: white;
+        }
+
+        .stats-number {
+            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="font-sans">
+<div class="container mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
+            <p class="text-gray-600">Welcome back, Administrator</p>
+        </div>
+        <div class="text-sm text-gray-500">
+            <i class="fas fa-clock mr-2"></i>
+            <span id="currentTime"></span>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+<!--    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">-->
+<!--        <div class="dashboard-card p-6">-->
+<!--            <div class="flex items-center justify-between">-->
+<!--                <div>-->
+<!--                    <p class="text-gray-500 text-sm">Total Users</p>-->
+<!--                    <h3 class="text-3xl font-bold stats-number">1,234</h3>-->
+<!--                </div>-->
+<!--                <div class="floating-icon">-->
+<!--                    <i class="fas fa-users text-3xl text-indigo-500"></i>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="dashboard-card p-6">-->
+<!--            <div class="flex items-center justify-between">-->
+<!--                <div>-->
+<!--                    <p class="text-gray-500 text-sm">Active Providers</p>-->
+<!--                    <h3 class="text-3xl font-bold stats-number">856</h3>-->
+<!--                </div>-->
+<!--                <div class="floating-icon">-->
+<!--                    <i class="fas fa-user-tie text-3xl text-indigo-500"></i>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="dashboard-card p-6">-->
+<!--            <div class="flex items-center justify-between">-->
+<!--                <div>-->
+<!--                    <p class="text-gray-500 text-sm">Total Bookings</p>-->
+<!--                    <h3 class="text-3xl font-bold stats-number">3,567</h3>-->
+<!--                </div>-->
+<!--                <div class="floating-icon">-->
+<!--                    <i class="fas fa-calendar-check text-3xl text-indigo-500"></i>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="dashboard-card p-6">-->
+<!--            <div class="flex items-center justify-between">-->
+<!--                <div>-->
+<!--                    <p class="text-gray-500 text-sm">Revenue</p>-->
+<!--                    <h3 class="text-3xl font-bold stats-number">$12.5K</h3>-->
+<!--                </div>-->
+<!--                <div class="floating-icon">-->
+<!--                    <i class="fas fa-chart-line text-3xl text-indigo-500"></i>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!-- Main Navigation Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a th:href="@{/admin-view/customers}" class="block">
+            <div class="nav-card rounded-xl p-6 h-full">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-users-cog text-4xl text-indigo-600 card-icon mr-4"></i>
+                    <h2 class="text-2xl font-bold text-gray-800 card-title">Manage Customers</h2>
+                </div>
+                <p class="text-gray-600 card-description">
+                    View and manage customer accounts, verify identities, and handle customer support requests.
+                </p>
+                <div class="mt-4 flex items-center text-indigo-600">
+                    <span class="card-description">Access Customer Management</span>
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+        </a>
+
+        <a th:href="@{/admin-view/providers}" class="block">
+            <div class="nav-card rounded-xl p-6 h-full">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-user-shield text-4xl text-indigo-600 card-icon mr-4"></i>
+                    <h2 class="text-2xl font-bold text-gray-800 card-title">Manage Service Providers</h2>
+                </div>
+                <p class="text-gray-600 card-description">
+                    Review and manage service provider applications, monitor performance, and ensure quality standards.
+                </p>
+                <div class="mt-4 flex items-center text-indigo-600">
+                    <span class="card-description">Access Provider Management</span>
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<script>
+    // Update current time
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('currentTime').textContent =
+            now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+</script>
+</body>
+</html>

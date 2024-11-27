@@ -1,0 +1,32 @@
+package com.gmail.riteshbakare420.Service.Provider.System.model;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+@Entity
+@Table(name = "service_providers")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ServiceProvider {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String email;
+    private String phone;
+    private String serviceType;
+
+    @JsonManagedReference(value = "provider-slots")
+    @OneToMany(mappedBy = "serviceProvider", cascade = CascadeType.ALL)
+    private List<Slot> slots;
+
+    @JsonManagedReference(value = "provider-bookings")
+    @OneToMany(mappedBy = "serviceProvider", cascade = CascadeType.ALL)
+    private List<Booking> bookings;
+}

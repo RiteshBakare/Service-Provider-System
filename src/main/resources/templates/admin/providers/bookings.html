@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Provider Bookings</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .status-badge {
+            @apply px-3 py-1 text-sm font-medium rounded-full;
+        }
+        .table-hover tr:hover {
+            @apply bg-gray-50;
+        }
+        .message {
+            animation: fadeOut 5s forwards;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+<div class="min-h-screen p-6 max-w-7xl mx-auto">
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center">
+                <i class="fas fa-calendar-alt text-3xl text-blue-600 mr-3"></i>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">Bookings for</h1>
+                    <p class="text-xl text-blue-600 font-semibold mt-1" th:text="${provider.name}"></p>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${message}" th:text="${message}"
+             class="message mb-4 p-4 bg-green-100 text-green-700 rounded"></div>
+        <div th:if="${error}" th:text="${error}"
+             class="message mb-4 p-4 bg-red-100 text-red-700 rounded"></div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full table-hover" th:if="${not #lists.isEmpty(bookings)}">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Email</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Phone</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Time</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Time</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Time</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr th:each="booking : ${bookings}" class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${booking.bookingId}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.customerDetails?.name}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.customerDetails?.email}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.customerDetails?.phone}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${#temporals.format(booking.slotDetails?.startTime, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${#temporals.format(booking.slotDetails?.endTime, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${#temporals.format(booking.bookingTime, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                                <span th:text="${booking.status}"
+                                      th:class="${'status-badge ' +
+                                        (booking.status == 'CONFIRMED' ? 'bg-green-100 text-green-800' :
+                                         booking.status == 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                         booking.status == 'CANCELLED' ? 'bg-red-100 text-red-800' :
+                                         'bg-gray-100 text-gray-800')}">
+                                </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(bookings)}"
+                 class="text-center py-12 bg-gray-50 rounded-lg">
+                <i class="fas fa-calendar-times text-4xl text-gray-400 mb-3"></i>
+                <p class="text-gray-500 text-lg">No bookings found for this service provider.</p>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <a th:href="@{/admin-view/providers}"
+               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Provider List
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

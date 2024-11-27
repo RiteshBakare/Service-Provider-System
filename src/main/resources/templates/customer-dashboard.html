@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #818cf8;
+            --bg-color: #f9fafb;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-bottom: none;
+            padding: 1.25rem;
+        }
+
+        .card-header h2, .card-header h3 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            border: none;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Service Provider Cards */
+        .provider-card {
+            height: 100%;
+            transition: transform 0.2s ease;
+        }
+
+        .provider-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .provider-card .card-body {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .provider-card .btn {
+            margin-top: auto;
+        }
+
+        /* Table Styling */
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background-color: #f3f4f6;
+            border-bottom: none;
+            color: #4b5563;
+            font-weight: 600;
+        }
+
+        .table td, .table th {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        /* Customer Details Styling */
+        .customer-info p {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background-color: #f3f4f6;
+            border-radius: 6px;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .card-header h2, .card-header h3 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Customer Details Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2><i class="fas fa-user-circle me-2"></i>Customer Details</h2>
+        </div>
+        <div class="card-body">
+            <div class="row customer-info">
+                <div class="col-md-4">
+                    <p><i class="fas fa-user me-2"></i><strong>Name:</strong> <span th:text="${customer.name}"></span></p>
+                </div>
+                <div class="col-md-4">
+                    <p><i class="fas fa-envelope me-2"></i><strong>Email:</strong> <span th:text="${customer.email}"></span></p>
+                </div>
+                <div class="col-md-4">
+                    <p><i class="fas fa-phone me-2"></i><strong>Phone:</strong> <span th:text="${customer.phone}"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${successMessage}" class="alert alert-success" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Service Providers Section -->
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-briefcase me-2"></i>Available Service Providers</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3" th:each="provider : ${serviceProviders}">
+                    <div class="card provider-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-user-tie me-2"></i>
+                                <span th:text="${provider.name}"></span>
+                            </h5>
+                            <p class="card-text">
+                                <i class="fas fa-tags me-2"></i><strong>Service Type:</strong>
+                                <span th:text="${provider.serviceType}"></span><br>
+                                <i class="fas fa-envelope me-2"></i><strong>Email:</strong>
+                                <span th:text="${provider.email}"></span><br>
+                                <i class="fas fa-phone me-2"></i><strong>Phone:</strong>
+                                <span th:text="${provider.phone}"></span>
+                            </p>
+                            <a th:href="@{'/customer-view/' + ${customer.id} + '/provider/' + ${provider.id} + '/slots'}"
+                               class="btn btn-primary">
+                                <i class="fas fa-calendar-alt me-2"></i>View Available Slots
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Bookings Section -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3><i class="fas fa-calendar-check me-2"></i>Your Current Bookings</h3>
+        </div>
+        <div class="card-body">
+            <div th:if="${bookings.empty}" class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                No bookings found.
+            </div>
+            <div class="table-responsive" th:if="${!bookings.empty}">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th><i class="fas fa-hashtag me-2"></i>Booking ID</th>
+                        <th><i class="fas fa-user-tie me-2"></i>Service Provider</th>
+                        <th><i class="fas fa-calendar me-2"></i>Date</th>
+                        <th><i class="fas fa-clock me-2"></i>Time</th>
+                        <th><i class="fas fa-info-circle me-2"></i>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="booking : ${bookings}">
+                        <td th:text="${booking.id}"></td>
+                        <td th:text="${booking.serviceProvider.name}"></td>
+                        <td th:text="${#temporals.format(booking.slot.startTime, 'dd-MM-yyyy')}"></td>
+                        <td th:text="${#temporals.format(booking.slot.startTime, 'HH:mm')}"></td>
+                        <td>
+                            <span th:text="${booking.status}"
+                                  th:class="${'status-badge ' +
+                                  (booking.status == 'CONFIRMED' ? 'bg-success' :
+                                   booking.status == 'PENDING' ? 'bg-warning' :
+                                   booking.status == 'CANCELLED' ? 'bg-danger' : 'bg-secondary')} +
+                                   ' text-white'">
+                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .btn-primary {
+            @apply px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors;
+        }
+        .btn-danger {
+            @apply px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors;
+        }
+        .table-hover tr:hover {
+            @apply bg-gray-50;
+        }
+        .message {
+            animation: fadeOut 5s forwards;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+<div class="min-h-screen p-6 max-w-7xl mx-auto">
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Customer Management</h1>
+            <a href="/admin-view/customers/add" class="btn-primary inline-flex items-center">
+                <i class="fas fa-plus mr-2"></i> Add New Customer
+            </a>
+        </div>
+
+        <div th:if="${message}" th:text="${message}"
+             class="message mb-4 p-4 bg-green-100 text-green-700 rounded"></div>
+        <div th:if="${error}" th:text="${error}"
+             class="message mb-4 p-4 bg-red-100 text-red-700 rounded"></div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full table-hover">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr th:each="customer : ${customers}" class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${customer.id}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${customer.name}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${customer.email}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${customer.phone}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a th:href="@{/admin-view/customers/edit/{id}(id=${customer.id})}"
+                           class="text-blue-600 hover:text-blue-900 mr-3">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <form th:action="@{/admin-view/customers/delete/{id}(id=${customer.id})}"
+                              method="post" class="inline">
+                            <button type="submit"
+                                    onclick="return confirm('Are you sure you want to delete this customer?')"
+                                    class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a href="/admin-view/home" class="inline-flex items-center text-gray-600 hover:text-gray-900">
+        <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+    </a>
+</div>
+</body>
+</html>

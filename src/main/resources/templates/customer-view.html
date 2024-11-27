@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer View</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.16/tailwind.min.css">
+</head>
+<body class="bg-gray-100 font-sans">
+<div class="container mx-auto py-8">
+    <h1 class="text-3xl font-bold mb-4">Customer View</h1>
+
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h2 class="text-2xl font-bold mb-2">Customer Details</h2>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <p class="font-medium">Name:</p>
+                <p th:text="${customer.name}"></p>
+            </div>
+            <div>
+                <p class="font-medium">Email:</p>
+                <p th:text="${customer.email}"></p>
+            </div>
+            <div>
+                <p class="font-medium">Phone:</p>
+                <p th:text="${customer.phone}"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h2 class="text-2xl font-bold mb-2">Bookings</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left table-auto">
+                <thead class="bg-gray-200">
+                <tr>
+                    <th class="px-4 py-2">Booking ID</th>
+                    <th class="px-4 py-2">Service Provider</th>
+                    <th class="px-4 py-2">Booking Time</th>
+                    <th class="px-4 py-2">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="booking : ${bookings}" class="border-b">
+                    <td class="px-4 py-2" th:text="${booking.id}"></td>
+                    <td class="px-4 py-2" th:text="${booking.serviceProvider.name}"></td>
+                    <td class="px-4 py-2" th:text="${#temporals.format(booking.bookingTime, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td class="px-4 py-2" th:text="${booking.status}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h2 class="text-2xl font-bold mb-2">Book a Service</h2>
+        <div class="grid grid-cols-2 gap-4">
+            <div th:each="provider : ${serviceProviders}">
+                <h3 class="text-lg font-medium" th:text="${provider.name}"></h3>
+                <p th:text="${provider.serviceType}"></p>
+                <a th:href="@{/customer-view/{customerId}/book/{providerId}(customerId=${customer.id}, providerId=${provider.id})}"
+                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Book
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6" th:if="${errorMessage}">
+        <h2 class="text-2xl font-bold mb-2">Error</h2>
+        <p th:text="${errorMessage}"></p>
+    </div>
+</div>
+</body>
+</html>
