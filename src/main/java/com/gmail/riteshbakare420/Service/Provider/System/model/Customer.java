@@ -25,4 +25,12 @@ public class Customer {
     @JsonManagedReference(value = "customer-bookings")
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Booking> bookings;
+
+    @JsonManagedReference(value = "customer-request-bookings")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Booking> requestBookings;
+
+    @JsonManagedReference(value = "customer-request-slots")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Slot> requestSlots;
 }

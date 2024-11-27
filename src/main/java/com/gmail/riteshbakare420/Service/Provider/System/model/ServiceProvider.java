@@ -29,4 +29,8 @@ public class ServiceProvider {
     @JsonManagedReference(value = "provider-bookings")
     @OneToMany(mappedBy = "serviceProvider", cascade = CascadeType.ALL)
     private List<Booking> bookings;
+
+    @JsonManagedReference(value = "provider-request-bookings")
+    @OneToMany(mappedBy = "provider", cascade = CascadeType.ALL)
+    private List<Booking> requestBookings;
 }

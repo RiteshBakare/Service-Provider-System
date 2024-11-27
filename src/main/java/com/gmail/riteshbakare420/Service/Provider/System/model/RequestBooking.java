@@ -9,21 +9,29 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "requests")
+@Table(name = "reuquestbookings")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Request {
+public class RequestBooking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private boolean isRequesteAccepted;
-
-    @JsonBackReference(value = "customer-request-slots")
+    @JsonBackReference(value = "customer-request-bookings")
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @JsonBackReference(value = "provider-request-bookings")
+    @ManyToOne
+    @JoinColumn(name = "service_provider_id")
+    private ServiceProvider serviceProvider;
+
+    @OneToOne
+    @JoinColumn(name = "request_id")
+    private Request requestSlot;
+
+    private LocalDateTime requestBookingTime;
+    private String status;
 }
