@@ -218,81 +218,174 @@
         <span th:text="${errorMessage}"></span>
     </div>
 
-    <!-- Customer Request Section -->
-    <div class="card">
-        <div class="card-header">
-            <h3><i class="fas fa-briefcase me-2"></i>Customers</h3>
+    <!-- Customer Section -->
+    <div class="dashboard-card p-6 mb-8">
+        <div class="flex items-center mb-6">
+            <i class="fas fa-users text-3xl text-indigo-600 mr-3"></i>
+            <h2 class="text-2xl font-bold text-gray-800">Customers</h2>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4 mb-3" th:each="provider : ${customers}">
-                    <div class="card provider-card">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fas fa-user-tie me-2"></i>
-                                <span th:text="${provider.name}"></span>
-                            </h5>
-                            <p class="card-text">
-<!--                                <i class="fas fa-tags me-2"></i><strong>Service Type:</strong>-->
-<!--                                <span th:text="${provider.serviceType}"></span><br>-->
-                                <i class="fas fa-envelope me-2"></i><strong>Email:</strong>
-                                <span th:text="${provider.email}"></span><br>
-                                <i class="fas fa-phone me-2"></i><strong>Phone:</strong>
-                                <span th:text="${provider.phone}"></span>
-                            </p>
-                            <a th:href="@{'/service-provider-view/' + ${serviceProvider.id} + '/customer/' + ${provider.id} + '/slots'}"
-                               class="btn btn-primary">
-                                <i class="fas fa-calendar-alt me-2"></i>View Available Slots
-                            </a>
-                        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div th:each="customer : ${customers}"
+                 class="dashboard-card transform transition duration-300 hover:scale-105 hover:shadow-lg p-5">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-user text-indigo-600 text-xl"></i>
                     </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800" th:text="${customer.name}"></h3>
+                        <p class="text-sm text-gray-500" th:text="${customer.email}"></p>
+                    </div>
+                </div>
+                <div class="border-t border-gray-200 pt-4 mt-4">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-envelope text-gray-500 mr-2"></i>
+                        <span class="text-sm text-gray-700" th:text="${customer.email}"></span>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-phone text-gray-500 mr-2"></i>
+                        <span class="text-sm text-gray-700" th:text="${customer.phone}"></span>
+                    </div>
+                    <a th:href="@{'/service-provider-view/' + ${serviceProvider.id} + '/customer/' + ${customer.id} + '/slots'}"
+                       class="custom-button text-white font-semibold py-2 px-4 rounded-lg w-full text-center block">
+                        <i class="fas fa-calendar-alt mr-2"></i>View Requested Slots
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Current Bookings Section -->
-    <div class="card mt-4">
-        <div class="card-header">
-            <h3><i class="fas fa-calendar-check me-2"></i>Your Current Bookings</h3>
+    <div class="dashboard-card p-6">
+        <div class="flex items-center mb-6">
+            <i class="fas fa-calendar-check text-3xl text-indigo-600 mr-3"></i>
+            <h2 class="text-2xl font-bold text-gray-800">Your Current Bookings</h2>
         </div>
-        <div class="card-body">
-            <div th:if="${requestBookings.empty}" class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i>
-                No bookings found.
+
+        <div th:if="${requestBookings.empty}"
+             class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+            <div class="flex items-center">
+                <i class="fas fa-info-circle text-blue-600 mr-3"></i>
+                <p class="text-blue-800">No bookings found.</p>
             </div>
-            <div class="table-responsive" th:if="${!requestBookings.empty}">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th><i class="fas fa-hashtag me-2"></i>Booking ID</th>
-                        <th><i class="fas fa-user-tie me-2"></i>Service Provider</th>
-                        <th><i class="fas fa-calendar me-2"></i>Date</th>
-                        <th><i class="fas fa-clock me-2"></i>Time</th>
-                        <th><i class="fas fa-info-circle me-2"></i>Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="booking : ${requestBookings}">
-                        <td th:text="${booking.id}"></td>
-                        <td th:text="${booking.serviceProvider.name}"></td>
-                        <td th:text="${#temporals.format(booking.requestSlot.startTime, 'dd-MM-yyyy')}"></td>
-                        <td th:text="${#temporals.format(booking.requestSlot.startTime, 'HH:mm')}"></td>
-                        <td>
-                            <span th:text="${booking.status}"
-                                  th:class="${'status-badge ' +
-                                  (booking.status == 'CONFIRMED' ? 'bg-success' :
-                                   booking.status == 'PENDING' ? 'bg-warning' :
-                                   booking.status == 'CANCELLED' ? 'bg-danger' : 'bg-secondary')} +
-                                   ' text-white'">
-                            </span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+        </div>
+
+        <div th:if="${!requestBookings.empty}" class="overflow-x-auto rounded-lg border border-gray-200">
+            <table class="w-full text-left">
+                <thead class="table-header">
+                <tr>
+                    <th class="px-6 py-4 font-semibold text-gray-700">
+                        <i class="fas fa-hashtag mr-2"></i>Booking ID
+                    </th>
+                    <th class="px-6 py-4 font-semibold text-gray-700">
+                        <i class="fas fa-user-tie mr-2"></i>Service Provider
+                    </th>
+                    <th class="px-6 py-4 font-semibold text-gray-700">
+                        <i class="fas fa-calendar mr-2"></i>Date
+                    </th>
+                    <th class="px-6 py-4 font-semibold text-gray-700">
+                        <i class="fas fa-clock mr-2"></i>Time
+                    </th>
+                    <th class="px-6 py-4 font-semibold text-gray-700">
+                        <i class="fas fa-info-circle mr-2"></i>Status
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="booking : ${requestBookings}"
+                    class="border-t border-gray-200 hover:bg-gray-50 transition duration-200">
+                    <td class="px-6 py-4" th:text="${booking.id}"></td>
+                    <td class="px-6 py-4" th:text="${booking.serviceProvider.name}"></td>
+                    <td class="px-6 py-4" th:text="${#temporals.format(booking.requestSlot.startTime, 'dd-MM-yyyy')}"></td>
+                    <td class="px-6 py-4" th:text="${#temporals.format(booking.requestSlot.startTime, 'HH:mm')}"></td>
+                    <td class="px-6 py-4">
+                        <span th:class="${
+                            booking.status == 'CONFIRMED' ? 'status-badge status-confirmed' :
+                            booking.status == 'PENDING' ? 'status-badge status-pending' :
+                            'status-badge status-cancelled'
+                        }" th:text="${booking.status}"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <!-- Customer Request Section -->
+<!--    <div class="card">-->
+<!--        <div class="card-header">-->
+<!--            <h3><i class="fas fa-briefcase me-2"></i>Customers</h3>-->
+<!--        </div>-->
+<!--        <div class="card-body">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-4 mb-3" th:each="provider : ${customers}">-->
+<!--                    <div class="card provider-card">-->
+<!--                        <div class="card-body">-->
+<!--                            <h5 class="card-title">-->
+<!--                                <i class="fas fa-user-tie me-2"></i>-->
+<!--                                <span th:text="${provider.name}"></span>-->
+<!--                            </h5>-->
+<!--                            <p class="card-text">-->
+<!--&lt;!&ndash;                                <i class="fas fa-tags me-2"></i><strong>Service Type:</strong>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <span th:text="${provider.serviceType}"></span><br>&ndash;&gt;-->
+<!--                                <i class="fas fa-envelope me-2"></i><strong>Email:</strong>-->
+<!--                                <span th:text="${provider.email}"></span><br>-->
+<!--                                <i class="fas fa-phone me-2"></i><strong>Phone:</strong>-->
+<!--                                <span th:text="${provider.phone}"></span>-->
+<!--                            </p>-->
+<!--                            <a th:href="@{'/service-provider-view/' + ${serviceProvider.id} + '/customer/' + ${provider.id} + '/slots'}"-->
+<!--                               class="btn btn-primary">-->
+<!--                                <i class="fas fa-calendar-alt me-2"></i>View Available Slots-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Current Bookings Section &ndash;&gt;-->
+<!--    <div class="card mt-4">-->
+<!--        <div class="card-header">-->
+<!--            <h3><i class="fas fa-calendar-check me-2"></i>Your Current Bookings</h3>-->
+<!--        </div>-->
+<!--        <div class="card-body">-->
+<!--            <div th:if="${requestBookings.empty}" class="alert alert-info">-->
+<!--                <i class="fas fa-info-circle me-2"></i>-->
+<!--                No bookings found.-->
+<!--            </div>-->
+<!--            <div class="table-responsive" th:if="${!requestBookings.empty}">-->
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th><i class="fas fa-hashtag me-2"></i>Booking ID</th>-->
+<!--                        <th><i class="fas fa-user-tie me-2"></i>Service Provider</th>-->
+<!--                        <th><i class="fas fa-calendar me-2"></i>Date</th>-->
+<!--                        <th><i class="fas fa-clock me-2"></i>Time</th>-->
+<!--                        <th><i class="fas fa-info-circle me-2"></i>Status</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr th:each="booking : ${requestBookings}">-->
+<!--                        <td th:text="${booking.id}"></td>-->
+<!--                        <td th:text="${booking.serviceProvider.name}"></td>-->
+<!--                        <td th:text="${#temporals.format(booking.requestSlot.startTime, 'dd-MM-yyyy')}"></td>-->
+<!--                        <td th:text="${#temporals.format(booking.requestSlot.startTime, 'HH:mm')}"></td>-->
+<!--                        <td>-->
+<!--                            <span th:text="${booking.status}"-->
+<!--                                  th:class="${'status-badge ' +-->
+<!--                                  (booking.status == 'CONFIRMED' ? 'bg-success' :-->
+<!--                                   booking.status == 'PENDING' ? 'bg-warning' :-->
+<!--                                   booking.status == 'CANCELLED' ? 'bg-danger' : 'bg-secondary')} +-->
+<!--                                   ' text-white'">-->
+<!--                            </span>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 </div>
 
 <script>
