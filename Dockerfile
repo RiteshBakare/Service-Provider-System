@@ -4,8 +4,7 @@ FROM eclipse-temurin:21-jdk-alpine
 # Set the working directory
 WORKDIR /app
 
-# Copy the Maven wrapper and project files
-COPY .mvn/ .mvn
+# Copy the Maven wrapper script and project files
 COPY mvnw pom.xml ./
 
 # Download dependencies
