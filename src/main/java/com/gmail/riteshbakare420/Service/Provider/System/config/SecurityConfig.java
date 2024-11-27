@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,7 +17,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/index.html", "/login", "/register").permitAll()
+                        .requestMatchers("/", "/index.html", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/customer-view/**").hasRole("CUSTOMER")
                         .requestMatchers("/service-provider-view/**").hasRole("SERVICE_PROVIDER")
                         .requestMatchers("/admin-view/**").hasRole("ADMIN")
@@ -34,7 +35,16 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 )
-                .csrf(csrf -> csrf.disable()); // For simplicity, disable CSRF. In production, enable it.
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .invalidSessionUrl("/login")
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false)
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedPage("/access-denied")
+                )
+                .csrf(csrf -> csrf.disable()); // Recommended to enable in production
 
         return http.build();
     }
