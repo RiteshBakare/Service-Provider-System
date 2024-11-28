@@ -616,7 +616,7 @@
                     <td class="px-6 py-4" th:text="${slot.requestedService}"></td>
                     <td class="px-6 py-4">
                                 <span th:class="${slot.isRequestAccepted ? 'status-badge status-confirmed' : 'status-badge status-pending'}"
-                                      th:text="${slot.isRequestAccepted ? 'Booked' : 'Available'}"></span>
+                                      th:text="${slot.isRequestAccepted ? 'Booked' : 'Not Booked Yet'}"></span>
                     </td>
                 </tr>
                 </tbody>
